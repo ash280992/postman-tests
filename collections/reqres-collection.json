@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "a4174102-26c8-4944-b668-73fafe0f7e8d",
+		"name": "Postman API Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19661046"
+	},
+	"item": [
+		{
+			"name": "GET Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Validate Status Code', ()=>{",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"const dataJson = pm.response.json();",
+							"pm.test('Validate user email', ()=>{",
+							"    pm.expect(dataJson.data.email).contains('@');",
+							"    pm.expect(dataJson.data.email).to.eql('janet.weaver@reqres.in');",
+							"})",
+							"pm.test('Validate response should have id', ()=>{",
+							"    pm.expect(dataJson.data).to.have.property('id');",
+							"    pm.expect(dataJson.data.id).to.eql(2);",
+							"})",
+							"",
+							"pm.test('Validate response should have firstname and lastname', ()=>{",
+							"    pm.expect(dataJson.data).to.have.property('first_name');",
+							"    pm.expect(dataJson.data).to.have.property('last_name');",
+							"})",
+							"",
+							"pm.test('Validate the response has support', ()=>{",
+							"    pm.expect(dataJson.support).to.have.property('url');",
+							"    pm.expect(dataJson.support).to.have.property('text');",
+							"    pm.expect(dataJson.support.url).to.contain('reqres');",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.headers.add({",
+							"    key: 'x-api-key',",
+							"    value: 'reqres-free-v1'",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://reqres.in/api/users/2",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Validate status code', ()=>{",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"",
+							"const parsedBody = JSON.parse(pm.request.body.raw);",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test('Validate Response Body', ()=>{",
+							"",
+							"    pm.expect(responseJson).to.have.property('name');",
+							"    pm.expect(responseJson.name).to.eql(parsedBody.name);",
+							"    pm.expect(responseJson).to.have.property('id');",
+							"    pm.expect(responseJson.id).to.not.eql(''); // Fixed assertion syntax",
+							"    pm.expect(responseJson).to.have.property('job');",
+							"    pm.expect(responseJson.job).to.eql(parsedBody.job);",
+							"})",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Jany1\",\n  \"job\": \"Senior Manager\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT UpdateUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resJson = pm.response.json();",
+							"const parJson = JSON.parse(pm.request.body.raw);",
+							"",
+							"pm.test('Validate the status code', ()=>{",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test('Validate the json body', ()=>{",
+							"    pm.expect(resJson).to.have.property('name');",
+							"    pm.expect(resJson.name).to.eql(parJson.name);",
+							"    pm.expect(resJson).to.have.property('job');",
+							"    pm.expect(resJson.job).to.eql(parJson.job);",
+							"    pm.expect(resJson).to.have.property('updatedAt');",
+							"    pm.expect(resJson.updatedAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Jane Kross\",\n  \"job\": \"Deputy Manager\",\n  \"first_name\": \"Jane\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users/2",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH UpdatePartially",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", ()=>{",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"const respJson = pm.response.json();",
+							"const parsJson = JSON.parse(pm.request.body.raw);",
+							"",
+							"pm.test('The job is updated', ()=>{",
+							"    pm.expect(respJson.job).to.eql(parsJson.job);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"job\": \"Deputy Director\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users/2",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE UserDelete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 204', ()=>{",
+							"    pm.response.to.have.status(204);",
+							"})",
+							"pm.test('Response body is empty', ()=>{",
+							"    pm.response.to.have.body('');",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://reqres.in/api/users/3",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
